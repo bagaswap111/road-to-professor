@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>🎓 Road to Professor - Milestone & Target Terukur</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: linear-gradient(135deg, #f5f7fe 0%, #eef2ff 100%);
+        font-family: "Inter", sans-serif;
+        padding: 2rem 1.5rem;
+        color: #1e293b;
+      }
+
+      .container {
+        max-width: 1500px;
+        margin: 0 auto;
+      }
+
+      /* Hero section Gen Z */
+      .hero {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(120deg, #0f2b3d, #1b6b87, #2a9d8f);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.5px;
+      }
+      .hero p {
+        font-weight: 500;
+        color: #475569;
+        margin-top: 0.5rem;
+        font-size: 1rem;
+      }
+
+      /* Layout dua kolom */
+      .dashboard {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.8rem;
+      }
+
+      /* Panel kiri (glassmorphism) */
+      .panel-kiri {
+        flex: 1.2;
+        min-width: 280px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border-radius: 2rem;
+        padding: 1.5rem;
+        box-shadow:
+          0 20px 35px -10px rgba(0, 0, 0, 0.1),
+          0 0 0 1px rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      /* Scrollbar keren */
+      .panel-kiri::-webkit-scrollbar {
+        width: 6px;
+      }
+      .panel-kiri::-webkit-scrollbar-track {
+        background: #e2e8f0;
+        border-radius: 10px;
+      }
+      .panel-kiri::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+      }
+
+      .panel-kanan {
+        flex: 2.5;
+        min-width: 380px;
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+      label {
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #0f3b4f;
+        margin-bottom: 0.3rem;
+        display: block;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border-radius: 1.5rem;
+        border: 1px solid #cbd5e1;
+        background: white;
+        font-family: "Inter", monospace;
+        font-weight: 500;
+        transition: 0.2s;
+      }
+      select:focus,
+      input:focus {
+        outline: none;
+        border-color: #2a9d8f;
+        box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+      }
+
+      /* Prestasi dengan kartu rapi */
+      .achievement-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 0.5rem;
+      }
+      .achieve-card {
+        background: white;
+        border-radius: 2rem;
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2edf2;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        user-select: none;
+      }
+      .achieve-card:hover {
+        transform: translateY(-2px);
+        background: #f8fafc;
+        border-color: #2a9d8f;
+      }
+      .achieve-card input {
+        width: 18px;
+        height: 18px;
+        margin: 0;
+        accent-color: #2a9d8f;
+      }
+      .achieve-card span {
+        color: #1e293b;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 1.2rem 0 0.8rem 0;
+        background: linear-gradient(120deg, #1e3c72, #2b4e7a);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        display: inline-block;
+      }
+
+      button {
+        background: #1e4a6b;
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 0.8rem;
+        border-radius: 3rem;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 0.8rem;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      }
+      button:hover {
+        background: #0f3b52;
+        transform: scale(0.98);
+      }
+      .btn-pdf {
+        background: #2a9d8f;
+      }
+      .btn-pdf:hover {
+        background: #21867a;
+      }
+      .btn-feedback {
+        background: #e76f51;
+      }
+      .btn-feedback:hover {
+        background: #d45a3a;
+      }
+
+      /* Mission card modern */
+      .mission-card {
+        background: white;
+        border-radius: 2rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ffffff80;
+      }
+
+      .info-panel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        background: #f1f5f9;
+        border-radius: 1.5rem;
+        padding: 1rem;
+        justify-content: space-between;
+      }
+      .info-card {
+        text-align: center;
+        flex: 1;
+        background: white;
+        border-radius: 1.2rem;
+        padding: 0.5rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .progress-bar-bg {
+        background: #e2e8f0;
+        border-radius: 2rem;
+        height: 1rem;
+        margin: 1rem 0;
+      }
+      .progress-fill {
+        background: linear-gradient(90deg, #2a9d8f, #1e4a6b);
+        width: 0%;
+        height: 1rem;
+        border-radius: 2rem;
+      }
+
+      .quest-list {
+        margin-top: 1rem;
+      }
+      .quest-item {
+        display: flex;
+        gap: 0.7rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #ecf3f8;
+        align-items: center;
+      }
+      .target-table {
+        background: #f8fafc;
+        border-radius: 1.5rem;
+        padding: 1rem;
+        margin-top: 1rem;
+        border: 1px solid #e2edf2;
+      }
+      .target-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.4rem 0;
+        border-bottom: 1px dashed #cbd5e1;
+        font-size: 0.85rem;
+      }
+
+      .milestone-chart {
+        margin-top: 1.5rem;
+        background: white;
+        border-radius: 2rem;
+        padding: 1.2rem;
+        box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.08);
+      }
+      canvas {
+        max-height: 240px;
+        width: 100%;
+      }
+      .milestone-list {
+        margin-top: 1rem;
+        background: #f8fafc;
+        border-radius: 1.2rem;
+        padding: 0.8rem;
+      }
+      .milestone-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.4rem 0;
+        font-size: 0.8rem;
+        border-bottom: 1px solid #e2edf2;
+      }
+      .green {
+        color: #2a9d8f;
+        font-weight: 600;
+      }
+      .red {
+        color: #e76f51;
+        font-weight: 600;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+      }
+      .modal-content {
+        background: white;
+        margin: 10% auto;
+        padding: 1.8rem;
+        border-radius: 2rem;
+        width: 90%;
+        max-width: 480px;
+        box-shadow: 0 30px 40px rgba(0, 0, 0, 0.2);
+      }
+      .modal-content textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 1.2rem;
+        border: 1px solid #cbd5e1;
+        margin: 1rem 0;
+      }
+      .modal-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+      }
+      .modal-buttons button {
+        width: auto;
+        padding: 0.5rem 1.2rem;
+      }
+      footer {
+        text-align: center;
+        font-size: 0.7rem;
+        margin-top: 2rem;
+        color: #64748b;
+      }
+      @media (max-width: 800px) {
+        body {
+          padding: 1rem;
+        }
+        .dashboard {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="hero">
+        <h1>🎓 ROAD TO PROFESSOR</h1>
+        <p>
+          Atur variabel kamu, kejar misi, lihat milestone tahunan + target
+          kegiatan terukur, dan cetak PDF ✨
+        </p>
+      </div>
+      <div class="dashboard">
+        <!-- Panel kiri : input -->
+        <div class="panel-kiri">
+          <div class="section-title">📌 STATUS AWAL</div>
+          <div class="form-group">
+            <label>Jenjang saat ini</label>
+            <select id="currentRank">
+              <option value="tenaga_s2">Tenaga Pengajar (S2)</option>
+              <option value="tenaga_s3">Tenaga Pengajar (S3)</option>
+              <option value="asisten_ahli">Asisten Ahli</option>
+              <option value="lektor" selected>Lektor</option>
+              <option value="lektor_kepala">Lektor Kepala</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>AK saat ini</label
+            ><input type="number" id="currentAK" value="300" />
+          </div>
+          <div class="form-group">
+            <label>Tahun pengalaman</label
+            ><input type="number" id="experienceYears" value="5" />
+          </div>
+          <div class="form-group">
+            <label>Gelar tertinggi</label
+            ><select id="highestDegree">
+              <option value="s2">S2</option>
+              <option value="s3" selected>S3</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sertifikasi dosen</label
+            ><select id="sertifikasi">
+              <option value="yes">Ya</option>
+              <option value="no">Tidak</option>
+            </select>
+          </div>
+
+          <div class="section-title">🎯 TARGET KARIER</div>
+          <div class="form-group">
+            <label>Target akhir</label
+            ><select id="targetRank">
+              <option value="lektor">Lektor</option>
+              <option value="lektor_kepala">Lektor Kepala</option>
+              <option value="profesor" selected>Profesor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Durasi (tahun)</label
+            ><input type="number" id="targetYears" value="8" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Fast track</label
+            ><select id="fastTrack">
+              <option value="no">Tidak</option>
+              <option value="yes">Ya (Lektor → Profesor)</option>
+            </select>
+          </div>
+
+          <div class="section-title">⚡ PRODUKTIVITAS</div>
+          <div class="form-group">
+            <label>Intensitas riset</label
+            ><select id="researchIntensity">
+              <option value="low">Rendah (1-2 artikel/thn)</option>
+              <option value="medium" selected>Sedang (3-4 artikel/thn)</option>
+              <option value="high">Tinggi (5+ artikel/thn)</option>
+            </select>
+          </div>
+
+          <div class="section-title">📚 PUBLIKASI YANG SUDAH</div>
+          <div class="form-group">
+            <label>Q1</label><input type="number" id="pubQ1" value="0" />
+          </div>
+          <div class="form-group">
+            <label>Q2</label><input type="number" id="pubQ2" value="0" />
+          </div>
+          <div class="form-group">
+            <label>Q3</label><input type="number" id="pubQ3" value="1" />
+          </div>
+          <div class="form-group">
+            <label>Q4/Sinta1-2</label
+            ><input type="number" id="pubQ4" value="2" />
+          </div>
+          <div class="form-group">
+            <label>Prosiding Int.</label
+            ><input type="number" id="procInt" value="1" />
+          </div>
+          <div class="form-group">
+            <label>Buku referensi</label
+            ><input type="number" id="bookRef" value="0" />
+          </div>
+
+          <div class="section-title">🏆 PRESTASI (klik kartunya)</div>
+          <div class="achievement-grid" id="achievementGrid">
+            <div class="achieve-card" data-ach="hibah">
+              🏅 Ketua hibah kompetitif <input type="checkbox" id="ach_hibah" />
+            </div>
+            <div class="achieve-card" data-ach="reviewer">
+              📝 Reviewer jurnal internasional
+              <input type="checkbox" id="ach_reviewer" />
+            </div>
+            <div class="achieve-card" data-ach="penghargaan">
+              🏆 Penghargaan nasional/internasional
+              <input type="checkbox" id="ach_penghargaan" />
+            </div>
+            <div class="achieve-card" data-ach="promotor">
+              🎓 Promotor S3 <input type="checkbox" id="ach_promotor" />
+            </div>
+            <div class="achieve-card" data-ach="keynote">
+              🎤 Keynote speaker internasional
+              <input type="checkbox" id="ach_keynote" />
+            </div>
+          </div>
+
+          <button id="simulateBtn">🚀 SIMULASI & MILESTONE</button>
+          <button id="downloadPdfBtn" class="btn-pdf">
+            📄 UNDUH PDF (LENGKAP)
+          </button>
+          <button id="feedbackBtn" class="btn-feedback">
+            📢 REQUEST FEATURE
+          </button>
+        </div>
+
+        <!-- Panel kanan : output dan milestone -->
+        <div class="panel-kanan" id="printArea">
+          <div class="mission-card" id="missionReport">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span class="mission-title" style="font-weight: 800"
+                >🎯 QUEST: PROFESSOR</span
+              >
+              <span
+                class="badge-status"
+                id="rankBadge"
+                style="
+                  background: #eef2ff;
+                  padding: 0.2rem 0.8rem;
+                  border-radius: 2rem;
+                  font-size: 0.75rem;
+                "
+                >-</span
+              >
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="info-panel" id="infoPanel"></div>
+            <div class="quest-list" id="questList"></div>
+            <div id="targetKegiatanContainer" class="target-table"></div>
+            <div
+              id="warningsArea"
+              style="
+                margin-top: 0.8rem;
+                background: #fff3e3;
+                border-radius: 1rem;
+                padding: 0.7rem;
+                font-size: 0.8rem;
+              "
+            ></div>
+          </div>
+          <div class="milestone-chart" id="milestoneSection">
+            <h4>📈 MILESTONE TAHUNAN (AK & Publikasi)</h4>
+            <canvas id="milestoneChart" width="400" height="200"></canvas>
+            <div id="milestoneTable" class="milestone-list"></div>
+          </div>
+        </div>
+      </div>
+      <footer>
+        🌈 Target kegiatan berdasarkan sisa AK (Riset 45%, Pendidikan 35%,
+        Pengabdian 20%).
+      </footer>
+    </div>
+
+    <!-- Modal Request Feature -->
+    <div id="feedbackModal" class="modal">
+      <div class="modal-content">
+        <h3>📬 Kirim Saran / Request Fitur</h3>
+        <textarea
+          id="feedbackMessage"
+          rows="4"
+          placeholder="Tulis saran, usulan fitur, atau laporan bug..."
+        ></textarea>
+        <div class="modal-buttons">
+          <button id="sendFeedbackBtn" style="background: #2a9d8f">
+            ✉️ Kirim Email
+          </button>
+          <button id="closeModalBtn" style="background: #94a3b8">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        // POIN standar
+        const POIN = {
+          jurnalQ1: 35,
+          jurnalQ2: 25,
+          jurnalQ3: 21,
+          jurnalQ4: 15,
+          prosidingInt: 12,
+          bukuRef: 35,
+          pengabdian: 4,
+          bimbinganS3: 6,
+          bimbinganS2: 3,
+          bimbinganSkripsi: 1,
+        };
+        function hitungAKAwal(input) {
+          return (
+            input.q1 * 35 +
+            input.q2 * 25 +
+            input.q3 * 21 +
+            input.q4 * 15 +
+            input.procInt * 12 +
+            input.bookRef * 35
+          );
+        }
+        function getTargetAKJenjang(target) {
+          if (target === "profesor") return 850;
+          if (target === "lektor_kepala") return 400;
+          return 200;
+        }
+        function getQuestStatus(
+          currentRank,
+          targetRank,
+          fastTrack,
+          achievements,
+          degree,
+          expYears,
+          pubs,
+        ) {
+          let quests = [],
+            allPass = true;
+          if (targetRank === "profesor") {
+            let okS3 = degree === "s3";
+            quests.push({
+              text: "Memiliki gelar DOKTOR (S3)",
+              fulfilled: okS3,
+            });
+            if (!okS3) allPass = false;
+            let okExp = expYears >= 10;
+            quests.push({
+              text: "Masa kerja dosen tetap minimal 10 tahun",
+              fulfilled: okExp,
+            });
+            if (!okExp) allPass = false;
+            if (fastTrack === "yes" && currentRank === "lektor") {
+              let okFT = pubs.q1 >= 2;
+              quests.push({
+                text: "FAST TRACK: 2 artikel Q1 (IF>5) first/corresp",
+                fulfilled: okFT,
+              });
+              if (!okFT) allPass = false;
+            } else {
+              let okQ2 = pubs.q2 >= 1,
+                okQ3 = pubs.q3 >= 1;
+              quests.push({
+                text: "Wajib: 1 artikel Q2 first/corresp",
+                fulfilled: okQ2,
+              });
+              quests.push({
+                text: "Wajib: 1 artikel Q3/Sinta1 first/corresp",
+                fulfilled: okQ3,
+              });
+              if (!okQ2 || !okQ3) allPass = false;
+            }
+            let hasAch = achievements.some((a) => a);
+            quests.push({
+              text: "Minimal 1 prestasi tambahan (ketua hibah, reviewer, penghargaan, promotor S3, keynote)",
+              fulfilled: hasAch,
+            });
+            if (!hasAch) allPass = false;
+          } else if (targetRank === "lektor_kepala") {
+            let ok = pubs.q2 >= 1;
+            quests.push({ text: "1 artikel Q2 first/corresp", fulfilled: ok });
+            if (!ok) allPass = false;
+          } else {
+            let ok = pubs.q3 >= 1;
+            quests.push({
+              text: "1 artikel Q3/Sinta2 first/corresp",
+              fulfilled: ok,
+            });
+            if (!ok) allPass = false;
+          }
+          return { quests, allPass };
+        }
+        function hitungTargetKegiatan(sisaAK, tahunTersisa, intensitas) {
+          let targetRiset = sisaAK * 0.45;
+          let targetPendidikan = sisaAK * 0.35;
+          let targetPengabdian = sisaAK * 0.2;
+          let faktor =
+            intensitas === "high" ? 1.2 : intensitas === "low" ? 0.8 : 1;
+          let totalPub = Math.ceil((targetRiset / 20) * faktor);
+          let rekomQ2 = Math.max(0, Math.floor(totalPub * 0.4));
+          let rekomQ3 = Math.max(0, Math.floor(totalPub * 0.4));
+          let rekomPros = Math.max(0, totalPub - rekomQ2 - rekomQ3);
+          let semester = tahunTersisa * 2;
+          let kebutuhanAKMengajar = targetPendidikan * 0.6;
+          let sksPerSemester = Math.min(
+            16,
+            Math.max(6, Math.ceil(kebutuhanAKMengajar / semester / 0.2)),
+          );
+          let sisaPendidikanLain = targetPendidikan * 0.4;
+          let bimbinganSkripsi = Math.floor(
+            (sisaPendidikanLain * 0.5) / POIN.bimbinganSkripsi,
+          );
+          let bimbinganS2 = Math.floor(
+            (sisaPendidikanLain * 0.3) / POIN.bimbinganS2,
+          );
+          let bimbinganS3 = Math.floor(
+            (sisaPendidikanLain * 0.2) / POIN.bimbinganS3,
+          );
+          let jumlahPengabdian = Math.ceil(targetPengabdian / POIN.pengabdian);
+          return {
+            totalPubDibutuhkan: totalPub,
+            rekomQ2,
+            rekomQ3,
+            rekomPros,
+            sksPerSemester,
+            bimbinganSkripsi,
+            bimbinganS2,
+            bimbinganS3,
+            jumlahPengabdian,
+            targetRiset: Math.round(targetRiset),
+          };
+        }
+
+        let chartInstance = null;
+        function generateMilestone(
+          sisaAK,
+          tahun,
+          currentAK,
+          targetAK,
+          intensity,
+        ) {
+          let labels = [],
+            akKumulatif = [],
+            pubKumulatif = [],
+            detailList = [];
+          let akPerTahun = sisaAK / tahun;
+          let faktor =
+            intensity === "high" ? 1.2 : intensity === "low" ? 0.8 : 1;
+          for (let i = 1; i <= tahun; i++) {
+            labels.push(`Th ${i}`);
+            let akTarget = currentAK + akPerTahun * i;
+            akKumulatif.push(Math.min(targetAK, akTarget));
+            let akRisetTahunIni = akPerTahun * 0.45;
+            let pubEstTahunIni = Math.ceil((akRisetTahunIni / 20) * faktor);
+            let pubKum = (pubKumulatif[i - 2] || 0) + pubEstTahunIni;
+            pubKumulatif.push(pubKum);
+            detailList.push({
+              tahun: i,
+              akCapaian: Math.min(targetAK, akTarget),
+              pubCapaian: pubKum,
+            });
+          }
+          return { labels, akKumulatif, pubKumulatif, detailList };
+        }
+        function renderChart(labels, akData, pubData) {
+          const ctx = document
+            .getElementById("milestoneChart")
+            .getContext("2d");
+          if (chartInstance) chartInstance.destroy();
+          chartInstance = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: "AK Kumulatif (target progres)",
+                  data: akData,
+                  borderColor: "#2a9d8f",
+                  backgroundColor: "rgba(42,157,143,0.1)",
+                  tension: 0.2,
+                  fill: true,
+                  yAxisID: "y",
+                },
+                {
+                  label: "Publikasi Kumulatif (rekomendasi)",
+                  data: pubData,
+                  borderColor: "#e76f51",
+                  backgroundColor: "rgba(231,111,81,0.1)",
+                  tension: 0.2,
+                  fill: true,
+                  yAxisID: "y1",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: { tooltip: { mode: "index" } },
+              scales: {
+                y: { title: { text: "AK" }, beginAtZero: true },
+                y1: {
+                  position: "right",
+                  title: { text: "Jumlah Publikasi" },
+                  grid: { drawOnChartArea: false },
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+        }
+        function renderMilestoneDetail(detailList) {
+          let html = `<h5 style="margin-bottom:0.5rem;">📅 RINCIAN MILESTONE PER TAHUN</h5>`;
+          detailList.forEach((d) => {
+            html += `<div class="milestone-item"><span><strong>Tahun ${d.tahun}</strong></span><span>AK: ${Math.round(d.akCapaian)}</span><span>Publikasi: ${d.pubCapaian} artikel</span></div>`;
+          });
+          document.getElementById("milestoneTable").innerHTML = html;
+        }
+
+        function runSimulation() {
+          const currentRank = document.getElementById("currentRank").value;
+          let currentAK =
+            parseFloat(document.getElementById("currentAK").value) || 0;
+          const expYears =
+            parseInt(document.getElementById("experienceYears").value) || 0;
+          const degree = document.getElementById("highestDegree").value;
+          const sertifikasi = document.getElementById("sertifikasi").value;
+          const targetRank = document.getElementById("targetRank").value;
+          let targetYears =
+            parseInt(document.getElementById("targetYears").value) || 1;
+          const fastTrack = document.getElementById("fastTrack").value;
+          const intensity = document.getElementById("researchIntensity").value;
+          const existingPubs = {
+            q1: parseInt(document.getElementById("pubQ1").value) || 0,
+            q2: parseInt(document.getElementById("pubQ2").value) || 0,
+            q3: parseInt(document.getElementById("pubQ3").value) || 0,
+            q4: parseInt(document.getElementById("pubQ4").value) || 0,
+            procInt: parseInt(document.getElementById("procInt").value) || 0,
+            bookRef: parseInt(document.getElementById("bookRef").value) || 0,
+          };
+          const achievements = [
+            document.getElementById("ach_hibah").checked,
+            document.getElementById("ach_reviewer").checked,
+            document.getElementById("ach_penghargaan").checked,
+            document.getElementById("ach_promotor").checked,
+            document.getElementById("ach_keynote").checked,
+          ];
+          let akDariPub = hitungAKAwal(existingPubs);
+          let totalAKAwal =
+            currentAK + akDariPub + (sertifikasi === "yes" ? 10 : 0);
+          const targetAK = getTargetAKJenjang(targetRank);
+          let sisaAK = Math.max(0, targetAK - totalAKAwal);
+          let poinPerTahun = targetYears > 0 ? sisaAK / targetYears : 0;
+          let mampu =
+            (intensity === "high" ? 6 : intensity === "medium" ? 3.5 : 1.5) *
+              20 >=
+            poinPerTahun
+              ? "✅ On Track"
+              : "⚠️ Perlu akselerasi";
+          document.getElementById("rankBadge").innerHTML =
+            `Target: ${targetRank.toUpperCase()} | ${mampu}`;
+          let percent = Math.min(100, (totalAKAwal / targetAK) * 100);
+          document.getElementById("progressFill").style.width = percent + "%";
+          document.getElementById("infoPanel").innerHTML = `
+                <div class="info-card"><strong>AK Saat Ini</strong><br>${Math.floor(totalAKAwal)}</div>
+                <div class="info-card"><strong>AK Target</strong><br>${targetAK}</div>
+                <div class="info-card"><strong>Sisa AK</strong><br>${Math.floor(sisaAK)}</div>
+                <div class="info-card"><strong>Tahun tersisa</strong><br>${targetYears}</div>
+                <div class="info-card"><strong>Poin/Thn ideal</strong><br>${poinPerTahun.toFixed(1)}</div>
+            `;
+          const syarat = getQuestStatus(
+            currentRank,
+            targetRank,
+            fastTrack,
+            achievements,
+            degree,
+            expYears,
+            existingPubs,
+          );
+          const questContainer = document.getElementById("questList");
+          questContainer.innerHTML = `<div style="font-weight:700; margin-bottom:0.5rem;">📋 SYARAT KHUSUS (WAJIB)</div>`;
+          syarat.quests.forEach((q) => {
+            questContainer.innerHTML += `<div class="quest-item"><div>${q.fulfilled ? "✅" : "❌"}</div><div>${q.text}</div><div class="${q.fulfilled ? "green" : "red"}">${q.fulfilled ? "TERPENUHI" : "BELUM"}</div></div>`;
+          });
+          const targetKeg = hitungTargetKegiatan(
+            sisaAK,
+            targetYears,
+            intensity,
+          );
+          document.getElementById("targetKegiatanContainer").innerHTML = `
+                <h4 style="margin-bottom:0.5rem;">🎯 TARGET KEGIATAN TERUKUR</h4>
+                <div class="target-row"><strong>📚 PUBLIKASI YANG HARUS DIBUAT:</strong> minimal ${targetKeg.totalPubDibutuhkan} artikel</div>
+                <div class="target-row" style="padding-left:1rem;">↳ ${targetKeg.rekomQ2} artikel Q2, ${targetKeg.rekomQ3} artikel Q3, ${targetKeg.rekomPros} prosiding int.</div>
+                <div class="target-row"><strong>👨‍🏫 BEBAN MENGAJAR:</strong> ~${targetKeg.sksPerSemester} SKS/semester</div>
+                <div class="target-row"><strong>👥 BIMBINGAN:</strong> ${targetKeg.bimbinganSkripsi} skripsi + ${targetKeg.bimbinganS2} S2 + ${targetKeg.bimbinganS3} S3</div>
+                <div class="target-row"><strong>🤝 PENGABDIAN:</strong> ${targetKeg.jumlahPengabdian} kegiatan</div>
+                <div class="target-row"><strong>⚡ POIN RISET/THN:</strong> ${(targetKeg.targetRiset / targetYears).toFixed(1)} AK</div>
+            `;
+          const warningsDiv = document.getElementById("warningsArea");
+          if (!syarat.allPass && targetRank === "profesor")
+            warningsDiv.innerHTML =
+              '<span class="red">⚠️ Syarat khusus belum terpenuhi. Selesaikan publikasi wajib & prestasi.</span>';
+          else if (sisaAK <= 0 && syarat.allPass)
+            warningsDiv.innerHTML =
+              '<span class="green">🏆 SELAMAT! Semua syarat terpenuhi & AK tercapai. Siap usul profesor.</span>';
+          else
+            warningsDiv.innerHTML =
+              "<span>📌 Ikuti target kegiatan dan milestone di atas secara konsisten.</span>";
+
+          const milestone = generateMilestone(
+            sisaAK,
+            targetYears,
+            totalAKAwal,
+            targetAK,
+            intensity,
+          );
+          renderChart(
+            milestone.labels,
+            milestone.akKumulatif,
+            milestone.pubKumulatif,
+          );
+          renderMilestoneDetail(milestone.detailList);
+        }
+
+        async function downloadPDF() {
+          const element = document.getElementById("printArea");
+          if (!element) return;
+          const btn = document.getElementById("downloadPdfBtn");
+          const originalText = btn.innerText;
+          btn.innerText = "⏳ Memproses PDF...";
+          btn.disabled = true;
+          try {
+            if (chartInstance) chartInstance.resize();
+            await new Promise((r) => setTimeout(r, 200));
+            const canvas = await html2canvas(element, {
+              scale: 2,
+              backgroundColor: "#ffffff",
+              logging: false,
+            });
+            const imgData = canvas.toDataURL("image/png");
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF("p", "mm", "a4");
+            const imgWidth = 190;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+            pdf.save("simulasi_profesor_lengkap.pdf");
+          } catch (e) {
+            alert("Gagal generate PDF: " + e);
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+          }
+        }
+
+        // Modal request feature
+        const modal = document.getElementById("feedbackModal");
+        const feedbackBtn = document.getElementById("feedbackBtn");
+        const closeModalBtn = document.getElementById("closeModalBtn");
+        const sendFeedbackBtn = document.getElementById("sendFeedbackBtn");
+        const feedbackTextarea = document.getElementById("feedbackMessage");
+        function openModal() {
+          modal.style.display = "block";
+        }
+        function closeModal() {
+          modal.style.display = "none";
+          feedbackTextarea.value = "";
+        }
+        function sendFeedback() {
+          const message = feedbackTextarea.value.trim();
+          if (message === "") {
+            alert("Harap tulis pesan saran.");
+            return;
+          }
+          const subject = encodeURIComponent("Request Fitur Simulasi Profesor");
+          const body = encodeURIComponent(
+            "Halo,\n\nBerikut saran/request fitur:\n\n" +
+              message +
+              "\n\n--\nDari Aplikasi Simulasi Profesor",
+          );
+          window.location.href = `mailto:bagassaputra69@gmail.com?subject=${subject}&body=${body}`;
+          closeModal();
+          alert(
+            "Email client akan terbuka. Silakan kirim email secara manual.",
+          );
+        }
+        feedbackBtn.addEventListener("click", openModal);
+        closeModalBtn.addEventListener("click", closeModal);
+        sendFeedbackBtn.addEventListener("click", sendFeedback);
+        window.addEventListener("click", (e) => {
+          if (e.target === modal) closeModal();
+        });
+        document
+          .getElementById("simulateBtn")
+          .addEventListener("click", runSimulation);
+        document
+          .getElementById("downloadPdfBtn")
+          .addEventListener("click", downloadPDF);
+        window.addEventListener("load", runSimulation);
+      })();
+    </script>
+  </body>
+</html>
